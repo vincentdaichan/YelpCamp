@@ -8,50 +8,55 @@ const ejs = require('ejs');
 const app = express();
 
 app.use(bodyParser.urlencoded({extended: true}));
-mongoose.connect("mongodb://localhost:27017/campDB", {useNewUrlParser: true});
+app.set("view engine", "ejs");
+app.use(express.static('public'));
 
-// Create Camp Schema
 
-const campSchema = new mongoose.Schema({
+mongoose.connect("mongodb://localhost:27017/campDB", {useNewUrlParser: true, useUnifiedTopology: true});
+
+// Create Campground Schema
+
+const campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String,
+    description: String
 });
 
 // Create the Model
-const Camp = mongoose.model('Camp', campSchema);
+const Campground = mongoose.model('campground', campgroundSchema);
 
 
 
-// let campgroundsArr = [
-//     {name: "Salmon Creek", image: "https://images.pexels.com/photos/1061640/pexels-photo-1061640.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"},
-//     {name: "TheShwa", image: "https://images.pexels.com/photos/1687845/pexels-photo-1687845.jpeg?cs=srgb&dl=adventure-camping-grass-1687845.jpg&fm=jpg"},
-//     {name: "Missagwa", image: "https://images.unsplash.com/photo-1455496231601-e6195da1f841?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1395&q=80"}
-// ];
+// ----------- ROUTES ----------------------
 
-app.set("view engine", "ejs");
-
+// HOME ROUTE - landing page
 app.get("/", function(req, res){
     res.render("landing");
 });
 
+// INDEX ROUTE - list all campgrounds
 app.get("/campgrounds", function(req, res) {
 
-
-    res.render("campgrounds", {campgrounds: campgroundsArr});
-
-
+    Campground.find({}, function(err, camps){
+        if (err) {
+            console.log("Error loading Camps");
+            console.log(err);
+        } else {
+            console.log("Sucessfully loaded campsDB");
+            console.log(camps);
+            res.render("campgrounds", {campgrounds: camps});
+        }
+    });
 
 });
-
+// CREATE ROUTE - create a new campground
 app.post("/campgrounds", function(req, res){
     let campName = req.body.name;
     let campImage = req.body.image;
-    let newCampground = {name: campName, image: campImage}
+    let campDescription = req.body.description;
+    let newCampground = {name: campName, image: campImage, description: campDescription};
 
-    const newCamp = new Camp({
-        name: campName,
-        image: campImage
-    });
+    const newCamp = new Campground(newCampground);
 
     newCamp.save(function(err, camp){
         if (err){
@@ -62,12 +67,24 @@ app.post("/campgrounds", function(req, res){
             console.log(camp);
         }
     });
-    // campgroundsArr.push(newCampground);
     res.redirect("/campgrounds");
 });
 
+// NEW ROUTE - shows form to create a campground
 app.get("/campgrounds/new", function(req, res){
     res.render("new.ejs");
+});
+
+// SHOW ROUTE - show info about one specific campground
+
+app.get("/campgrounds/:id", function(req, res) {
+    Campground.findById(req.params.id, function(err, foundCampground) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("show", {camp: foundCampground});
+        }
+    });
 });
 
 
