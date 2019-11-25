@@ -1,3 +1,4 @@
+/* jshint esversion:6 */
 const mongoose = require("mongoose");
 
 // Create Campground Schema
@@ -5,7 +6,11 @@ const mongoose = require("mongoose");
 const campgroundSchema = new mongoose.Schema({
     name: String,
     image: String,
-    description: String
+    description: String,
+    comments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment"
+    }]
 });
 
 // Create the Model and export it
