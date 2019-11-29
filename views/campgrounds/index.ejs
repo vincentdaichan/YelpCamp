@@ -1,7 +1,4 @@
-<%- include('partials/header'); %>
-
-
-
+<%- include('../partials/header'); %>
 
 <div class="container">
     <header class="jumbotron">
@@ -21,6 +18,7 @@
                     <img class="img-fluid" src="<%= camp.image %>" alt="<%=camp.name %> + image">
                     <div class="caption">
                         <h4><%= camp.name %></h4>
+                        <a class="btn btn-primary" href="/campgrounds/<%=camp._id%>">More Info</a>
                     </div>
                 </div>
             </div>
@@ -28,4 +26,4 @@
     </div>
 </div>
 
-<%- include('partials/footer'); %>
+<%- include('../partials/footer'); %>
