@@ -1,3 +1,14 @@
+.thumbnail img {
+    width: 100%;
+}
+
+.thumnail {
+    padding: 0;
+}
+
+.thumnail .caption-full {
+    padding: 9px;
+}
 #footer {
     margin: 30px auto;
     text-align: center;
