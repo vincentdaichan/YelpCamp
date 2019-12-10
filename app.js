@@ -24,6 +24,19 @@ app.use(express.static(__dirname + "/public"));
 
 mongoose.connect("mongodb://localhost:27017/campDB", {useNewUrlParser: true, useUnifiedTopology: true});
 
+
+// PASSPORT CONFIGURATION
+app.use(require("express-session")({
+    secret: "A secret that cannot be shared.",
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 // ----------- ROUTES ----------------------
 
 // HOME ROUTE - landing page
@@ -117,6 +130,27 @@ app.post("/campgrounds/:id/comments", function(req, res){
                     campground.save();
                     res.redirect("/campgrounds/"+ campground._id);
                 }
+            });
+        }
+    });
+});
+
+// AUTH ROUTES
+app.get("/register", function(req, res){
+    res.render("register");
+});
+
+// Handles signup logic when a new user signs up
+app.post("/register", function(req, res){
+    let newUser = new User({username: req.body.username});
+    User.register(newUser, req.body.password, function(err, user){
+        if (err){
+            console.log(err);
+            return res.render("register");
+        }
+        else {
+            passport.authenticate("local")(req, res, function(){
+                res.redirect("/campgrounds");
             });
         }
     });
