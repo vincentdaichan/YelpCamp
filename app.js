@@ -99,7 +99,7 @@ app.get("/campgrounds/:id", function(req, res) {
 
 // ------------ COMMENTS ROUTE -----------------------------
 
-app.get("/campgrounds/:id/comments/new", function(req, res) {
+app.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res) {
 
     // Find campground by ID
     Campground.findById(req.params.id, function(err, campground){
@@ -112,7 +112,7 @@ app.get("/campgrounds/:id/comments/new", function(req, res) {
     });
 });
 
-app.post("/campgrounds/:id/comments", function(req, res){
+app.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
     // lookup campground using ID
     Campground.findById(req.params.id, function(err, campground){
         if (err) {
@@ -170,6 +170,22 @@ app.post("/login", passport.authenticate("local",
     // using passport authenticate middleware for login
 
 });
+
+// LOGOUT ROUTE
+app.get("/logout", function(req, res){
+    req.logout();
+    res.redirect("/campgrounds");
+});
+
+// Middleware
+function isLoggedIn(req, res, next){
+    if (req.isAuthenticated()){
+        return next();
+    }
+    else {
+        res.redirect("/login");
+    }
+}
 
 app.listen(3000, function(){
     console.log("YelpCamp Server started on port 3000");
