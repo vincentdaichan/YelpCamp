@@ -33,6 +33,10 @@ router.post("/", isLoggedIn, function(req, res){
                     console.log(err);
                 }
                 else {
+                    // Add username and id to comments, then save comment
+                    comment.author.id = req.user._id;
+                    comment.author.username = req.user.username;
+                    //console.log("New comment's username will be: " + req.user.username);
                     campground.comments.push(comment);
                     campground.save();
                     res.redirect("/campgrounds/"+ campground._id);
@@ -41,7 +45,7 @@ router.post("/", isLoggedIn, function(req, res){
         }
     });
 });
-// Middleware 
+// Middleware
 function isLoggedIn(req, res, next){
     if (req.isAuthenticated()){
         return next();

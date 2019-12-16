@@ -13,7 +13,7 @@ const Comment = require("./models/comment");
 const User = require("./models/user");
 const seedDB = require("./seeds");
 
-// Requiring Routes 
+// Requiring Routes
 const commentRoutes = require("./routes/comments");
 const campgroundRoutes = require("./routes/campgrounds");
 const indexRoutes = require("./routes/index");
@@ -26,9 +26,9 @@ app.use(express.static(__dirname + "/public"));
 
 //app.use(express.static('public'));
 
-
 mongoose.connect("mongodb://localhost:27017/campDB", {useNewUrlParser: true, useUnifiedTopology: true});
-
+// Seed the database
+//seedDB();
 
 // PASSPORT CONFIGURATION
 app.use(require("express-session")({

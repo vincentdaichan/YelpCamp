@@ -28,29 +28,29 @@ function seedDB() {
         } else {
             console.log("Removed campgrounds");
             // Add some default campgrounds
-            data.forEach(function(seed){
-                Campground.create(seed, function(err, campground){
-                    if (err){
-                        console.log(err);
-                    } else {
-                        console.log("Added a campground.");
-                        // Create a comment
-                        Comment.create({
-                            text: "This is a great place, but I wish there was WiFi :(",
-                            author: "Homer"
-                        }, function(err, comment){
-                            if (err) {
-                                console.log(err);
-                            } else {
-
-                            } campground.comments.push(comment);
-                            campground.save();
-                            console.log("Created a comment");
-                        }); // End create comment
-
-                    }
-                });
-            });
+            // data.forEach(function(seed){
+            //     Campground.create(seed, function(err, campground){
+            //         if (err){
+            //             console.log(err);
+            //         } else {
+            //             console.log("Added a campground.");
+            //             // Create a comment
+            //             Comment.create({
+            //                 text: "This is a great place, but I wish there was WiFi :(",
+            //                 author: "Homer"
+            //             }, function(err, comment){
+            //                 if (err) {
+            //                     console.log(err);
+            //                 } else {
+            //
+            //                 } campground.comments.push(comment);
+            //                 campground.save();
+            //                 console.log("Created a comment");
+            //             }); // End create comment
+            //
+            //         }
+            //     });
+            // });
         }
     });
 }
