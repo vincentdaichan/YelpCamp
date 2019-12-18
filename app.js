@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const ejs = require("ejs");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const methodOverride = require("method-override");
 
 
 const Campground = require("./models/campground");
@@ -21,6 +22,7 @@ const indexRoutes = require("./routes/index");
 const app = express();
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
