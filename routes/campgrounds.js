@@ -62,20 +62,14 @@ router.get("/:id", function(req, res) {
 });
 
 // EDIT CAMPGROUND - display update campground form
-router.get("/:id/edit", function(req, res){
-    Campground.findById(req.params.id, function(err, foundCampground){
-        if (err) {
-            console.log(err);
-            res.redirect("/campgrounds");
-        } else {
+router.get("/:id/edit", checkCampgroundOwnership, function(req, res){
+        Campground.findById(req.params.id, function(err, foundCampground){
             res.render("campgrounds/edit", {campground: foundCampground});
-        }
-    });
-
+        });
 });
 
 // UPDATE CAMPGROUND - get the form data from EDIT and update the campground
-router.put("/:id", function(req, res){
+router.put("/:id", checkCampgroundOwnership, function(req, res){
     campgroundData = {
         name: req.body.campground.name,
         image: req.body.campground.image,
@@ -95,7 +89,7 @@ router.put("/:id", function(req, res){
 });
 
 // DESTROY Campground - remove the particular campground
-router.delete("/:id", function(req, res){
+router.delete("/:id", checkCampgroundOwnership, function(req, res){
     console.log("Trying to delete");
 
     Campground.findByIdAndRemove(req.params.id , function(err){
@@ -114,6 +108,29 @@ function isLoggedIn(req, res, next){
     }
     else {
         res.redirect("/login");
+    }
+}
+
+function checkCampgroundOwnership(req, res, next) {
+    // is user logged in
+    if (req.isAuthenticated()) {
+        // does user own the campground?
+        Campground.findById(req.params.id, function(err, foundCampground){
+            if (err) {
+                console.log(err);
+                res.redirect("back");
+            } else {
+                // if (foundCampground.author.id === req.user._id)
+                if (foundCampground.author.id.equals(req.user._id)) {
+                    next();
+                } else {
+                    res.redirect("back");
+                }
+            }
+        });
+    } else {
+        console.log("You need to be logged in to do that!");
+        res.redirect("back");
     }
 }
 
