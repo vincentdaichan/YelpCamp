@@ -1,3 +1,4 @@
+/* jshint esversion:6 */
 const express = require("express");
 const router = express.Router();
 const Campground = require("../models/campground");
@@ -91,6 +92,20 @@ router.put("/:id", function(req, res){
         }
     });
     // redirect somewhere (show page)
+});
+
+// DESTROY Campground - remove the particular campground
+router.delete("/:id", function(req, res){
+    console.log("Trying to delete");
+
+    Campground.findByIdAndRemove(req.params.id , function(err){
+        if (err) {
+            console.log(err);
+            res.redirect("/campgrounds");
+        } else {
+            res.redirect("/campgrounds");
+        }
+    });
 });
 // Middleware
 function isLoggedIn(req, res, next){
